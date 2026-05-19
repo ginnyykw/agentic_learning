@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Thin wrapper so agents can call `scripts/py scripts/X.py ...` without
+# depending on `source .venv/bin/activate`. Resolves to the venv python
+# at <repo>/.venv/bin/python (host) or /sandbox/.venv/bin/python (sandbox)
+# — both lay out the venv in the same relative position to scripts/.
+set -euo pipefail
+
+here="$(cd "$(dirname "$0")" && pwd)"
+venv_py="$here/../.venv/bin/python"
+
+if [[ ! -x "$venv_py" ]]; then
+  echo "scripts/py: venv python not found at $venv_py" >&2
+  echo "  fix: from repo root, run:" >&2
+  echo "    uv venv --python 3.11 && source .venv/bin/activate && uv pip install -r requirements.txt" >&2
+  exit 1
+fi
+
+exec "$venv_py" "$@"

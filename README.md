@@ -1,0 +1,193 @@
+# Agentic Learning Series — Tabular ML Pipeline Demo
+
+A multi-agent ML pipeline that turns a client's spreadsheet into a trained model and a one-page decision-support report — all inside hardened NemoClaw sandboxes.
+
+> **One-line story:** "Drop a CSV in, get a model and a report out — four agents, two sandboxes, zero trust."
+
+## What It Does
+
+| Stage | Agent | What It Produces |
+|---|---|---|
+| 1. Preprocess | `preprocessor` | Cleaned Parquet + data profile JSON |
+| 2. Architect | `architect` | 2-3 model configurations in the queue |
+| 3. Train | `trainer` | Trained models + append-only results ledger |
+| 4. Report | `reporter` | Client-facing markdown report |
+
+## Architecture
+
+Two NemoClaw sandboxes with different security levels:
+
+- **`data-pipeline`** — NVIDIA inference API + local gateway only
+- **`reporter`** — Zero network (completely blocked)
+
+Both use Landlock filesystem locks, seccomp syscall filtering, and run as an unprivileged `sandbox` user.
+
+## Prerequisites
+
+- **NemoClaw installed** — `nemoclaw` and `openshell` on PATH
+- **Hermes installed** — `hermes` on PATH with a configured model and provider
+- **Docker** — running (for OpenShell sandboxes)
+- **NVIDIA inference API** — configured in `~/.nemoclaw/credentials.json`
+
+## Installation
+
+Run from the repository root.
+
+### 1. Create the sandboxes
+
+Each uses an interactive wizard. When prompted, select:
+- Agent runtime: `hermes`
+- Model: `nvidia/nemotron-3-super-120b-a12b` (or your preferred model)
+- Inference provider: NVIDIA prod (or your configured provider)
+
+```bash
+nemoclaw onboard --name data-pipeline
+nemoclaw onboard --name reporter
+```
+
+### 2. Apply network policies
+
+```bash
+# data-pipeline: allow only NVIDIA inference + local gateway
+openshell policy set --policy policy/demo-pipeline-restricted.yaml data-pipeline --wait
+
+# reporter: zero network (completely blocked)
+openshell policy set --policy policy/reporter-restricted.yaml reporter --wait
+```
+
+### 3. Upload files to `data-pipeline` sandbox
+
+```bash
+# Data, scripts, agent config, requirements
+for f in data/raw/telco-churn.csv scripts/prepare.py scripts/train.py \
+         scripts/render_report.py AGENTS.md requirements.txt; do
+  openshell sandbox upload data-pipeline "$f" "/sandbox/$f"
+done
+
+# Agent skills (preprocessor, architect, trainer)
+for role in preprocessor architect trainer; do
+  openshell sandbox upload data-pipeline \
+    "skills/$role/SKILL.md" "/sandbox/skills/$role/SKILL.md"
+done
+```
+
+### 4. Upload files to `reporter` sandbox
+
+```bash
+for f in scripts/render_report.py AGENTS.md requirements.txt; do
+  openshell sandbox upload reporter "$f" "/sandbox/$f"
+done
+openshell sandbox upload reporter \
+  "skills/reporter/SKILL.md" "/sandbox/skills/reporter/SKILL.md"
+```
+
+### 5. Install Python dependencies inside sandboxes
+
+```bash
+openshell sandbox exec -n data-pipeline \
+  bash -c 'python3 -m venv /sandbox/.venv && /sandbox/.venv/bin/pip install -r /sandbox/requirements.txt'
+
+openshell sandbox exec -n reporter \
+  bash -c 'python3 -m venv /sandbox/.venv && /sandbox/.venv/bin/pip install -r /sandbox/requirements.txt'
+```
+
+### 6. Create local Python venv
+
+For running the pipeline locally (outside sandboxes):
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 7. Set up Hermes profiles
+
+Creates profiles for each agent role (preprocessor, architect, trainer, reporter), inheriting your default model configuration:
+
+```bash
+bash scripts/setup_profiles.sh
+```
+
+### 8. Verify
+
+```bash
+nemoclaw list
+openshell policy get data-pipeline
+openshell policy get reporter
+```
+
+## Running the Pipeline
+
+### Full run (all four stages)
+
+```bash
+source .venv/bin/activate
+bash scripts/run_pipeline.sh data/raw/telco-churn.csv Churn
+```
+
+### Step by step (recommended for demos)
+
+```bash
+source .venv/bin/activate
+
+# 1. Preprocess — clean data and generate profile
+hermes -p preprocessor chat -t terminal,file \
+  -q "Process data/raw/telco-churn.csv with target=Churn" --yolo
+
+# 2. Architect — queue 2-3 model configs based on profile
+hermes -p architect chat -t file \
+  -q "Read data/clean/profile.json and queue 2-3 configs" --yolo
+
+# 3. Train — execute every queued config
+hermes -p trainer chat -t terminal,file \
+  -q "Drain runs/queue/" --yolo
+
+# 4. Report — generate client-facing report
+hermes -p reporter chat -t terminal,file \
+  -q "Render the final report" --yolo
+```
+
+### Security demo
+
+```bash
+bash scripts/demo-security.sh
+```
+
+Demonstrates network egress blocking, Landlock filesystem enforcement, process isolation, and data separation.
+
+## Expected Output
+
+After a full run:
+
+```
+data/clean/clean.parquet       # Cleaned dataset (12,330 rows x 20 features)
+data/clean/profile.json        # Data profile with target, dtypes, missingness
+runs/results.tsv               # Append-only ledger (3 rows: LR, XGB, LGBM)
+runs/live/best.json            # Winning run summary
+models/<run_id>.pkl            # Trained model artifacts
+reports/final.md               # Client-facing report with executive summary,
+                               # model comparison, SHAP feature importance,
+                               # and caveats
+```
+
+## Restart from scratch
+
+```bash
+rm -rf data/clean/ runs/ models/ reports/
+```
+
+Then re-run the pipeline stages. `data/raw/` is untouched.
+
+## Troubleshooting
+
+| Issue | Fix |
+|---|---|
+| Hermes profiles missing | Run `bash scripts/setup_profiles.sh` — it's idempotent |
+| Agent can't find pandas/xgboost | Activate the venv: `source .venv/bin/activate` |
+| Preprocessor says "target column ambiguous" | Pass `target=<col>` in the prompt explicitly |
+| Architect says "queue not empty" | `rm runs/queue/*.json` and retry |
+| All training runs failed | Check `runs/results.tsv` secondary_metrics_json for stderr |
+| Reporter says best.json missing | Trainer didn't produce a winner; check step 3 |
+| Sandbox policy not applied | `openshell policy get <name> --full` |
+| `l7_decision=deny` in logs | Re-run `openshell policy set` |

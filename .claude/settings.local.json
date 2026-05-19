@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:medium.com)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.nvidia.com)",
+      "WebFetch(domain:developer.nvidia.com)",
+      "WebFetch(domain:managemyclaw.com)",
+      "WebFetch(domain:hermes-agent.nousresearch.com)",
+      "Skill(qwen-tunnel)"
+    ]
+  }
+}

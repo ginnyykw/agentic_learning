@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1020" height="1558" viewBox="0 0 1020 1558">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<g transform="translate(40, 60)">
+<text x="470.0" y="57.800000000000004" text-anchor="middle" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="28" fill="rgba(30,64,175,1.0)">Agentic Learning Series Demo — NemoClaw Sandbox Security</text>
+<text x="470.0" y="80.9" text-anchor="middle" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="14" fill="rgba(100,116,139,1.0)">Two sandboxes · YAML policies · Network isolation · Landlock filesystem · No SSHFS</text>
+<text x="240.0" y="132.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="20" fill="rgba(30,64,175,1.0)">REPRODUCTION STEPS</text>
+<path d="M 62 140 L 62 1110" fill="none" stroke="rgba(203,213,225,1.0)" stroke-width="2" stroke-dasharray="none"/>
+<ellipse cx="66.0" cy="151.0" rx="4.0" ry="4.0" fill="rgba(59,130,246,1.0)" stroke="rgba(59,130,246,1.0)" stroke-width="1" opacity="1.0"/>
+<text x="262.0" y="161.775" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="13" fill="rgba(59,130,246,1.0)">1. Prerequisites</text>
+<text x="262.0" y="176.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Install OpenShell + NemoClaw on macOS.</text>
+<text x="262.0" y="190.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">No GPU needed for the demo.</text>
+<ellipse cx="66.0" cy="225.0" rx="4.0" ry="4.0" fill="rgba(59,130,246,1.0)" stroke="rgba(59,130,246,1.0)" stroke-width="1" opacity="1.0"/>
+<text x="262.0" y="235.775" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="13" fill="rgba(59,130,246,1.0)">2. Start gateway</text>
+<text x="262.0" y="250.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">openshell gateway start</text>
+<text x="262.0" y="264.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Docker cluster + gateway at :8080</text>
+<ellipse cx="66.0" cy="299.0" rx="4.0" ry="4.0" fill="rgba(59,130,246,1.0)" stroke="rgba(59,130,246,1.0)" stroke-width="1" opacity="1.0"/>
+<text x="262.0" y="309.77500000000003" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="13" fill="rgba(59,130,246,1.0)">3. Create data-pipeline</text>
+<text x="262.0" y="324.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">nemoclaw onboard data-pipeline</text>
+<text x="262.0" y="338.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Wizard: hermes + nemotron-3-super</text>
+<text x="262.0" y="351.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Inference: NVIDIA prod endpoint</text>
+<ellipse cx="66.0" cy="373.0" rx="4.0" ry="4.0" fill="rgba(59,130,246,1.0)" stroke="rgba(59,130,246,1.0)" stroke-width="1" opacity="1.0"/>
+<text x="262.0" y="383.77500000000003" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="13" fill="rgba(59,130,246,1.0)">4. Apply pipeline policy</text>
+<text x="262.0" y="398.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">openshell policy set --policy</text>
+<text x="262.0" y="412.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">policies/demo-pipeline-restricted.yaml data-pipeline --wait</text>
+<text x="262.0" y="425.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Only NVIDIA inference + local gateway</text>
+<ellipse cx="66.0" cy="447.0" rx="4.0" ry="4.0" fill="rgba(59,130,246,1.0)" stroke="rgba(59,130,246,1.0)" stroke-width="1" opacity="1.0"/>
+<text x="262.0" y="457.77500000000003" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="13" fill="rgba(59,130,246,1.0)">5. Upload to data-pipeline</text>
+<text x="262.0" y="472.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Upload: telco-churn.csv, scripts, agents, AGENTS.md</text>
+<text x="262.0" y="486.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Install: pandas, xgboost, scikit-learn, pyarrow</text>
+<ellipse cx="66.0" cy="521.0" rx="4.0" ry="4.0" fill="rgba(59,130,246,1.0)" stroke="rgba(59,130,246,1.0)" stroke-width="1" opacity="1.0"/>
+<text x="262.0" y="531.775" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="13" fill="rgba(59,130,246,1.0)">6. Create reporter sandbox</text>
+<text x="262.0" y="546.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">nemoclaw onboard reporter</text>
+<text x="262.0" y="560.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Same wizard settings as step 3</text>
+<ellipse cx="66.0" cy="595.0" rx="4.0" ry="4.0" fill="rgba(59,130,246,1.0)" stroke="rgba(59,130,246,1.0)" stroke-width="1" opacity="1.0"/>
+<text x="262.0" y="605.775" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="13" fill="rgba(59,130,246,1.0)">7. Apply reporter policy</text>
+<text x="262.0" y="620.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">openshell policy set --policy policies/reporter-restricted.yaml</text>
+<text x="262.0" y="634.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">reporter --wait</text>
+<text x="262.0" y="647.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">ZERO network — all outbound blocked</text>
+<ellipse cx="66.0" cy="669.0" rx="4.0" ry="4.0" fill="rgba(59,130,246,1.0)" stroke="rgba(59,130,246,1.0)" stroke-width="1" opacity="1.0"/>
+<text x="262.0" y="679.775" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="13" fill="rgba(59,130,246,1.0)">8. Upload to reporter</text>
+<text x="262.0" y="694.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Upload: render_report.py, reporter.md, AGENTS.md</text>
+<text x="262.0" y="708.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Install: pandas, pyarrow</text>
+<text x="262.0" y="721.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">NO raw data uploaded</text>
+<ellipse cx="66.0" cy="743.0" rx="4.0" ry="4.0" fill="rgba(59,130,246,1.0)" stroke="rgba(59,130,246,1.0)" stroke-width="1" opacity="1.0"/>
+<text x="262.0" y="753.775" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="13" fill="rgba(59,130,246,1.0)">9. Run pipeline</text>
+<text x="262.0" y="768.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">nemoclaw run data-pipeline run full pipeline</text>
+<text x="262.0" y="782.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">preprocessor -&gt; architect -&gt; trainer</text>
+<text x="262.0" y="795.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Output: clean.parquet, models/, results.tsv</text>
+<ellipse cx="66.0" cy="817.0" rx="4.0" ry="4.0" fill="rgba(59,130,246,1.0)" stroke="rgba(59,130,246,1.0)" stroke-width="1" opacity="1.0"/>
+<text x="262.0" y="827.775" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="13" fill="rgba(59,130,246,1.0)">10. Upload results</text>
+<text x="262.0" y="842.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">openshell sandbox upload reporter runs/results.tsv /sandbox/data/</text>
+<text x="262.0" y="856.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">openshell sandbox upload reporter runs/live/best.json</text>
+<text x="262.0" y="869.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">/sandbox/data/</text>
+<text x="262.0" y="883.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">openshell sandbox upload reporter models/*.pkl /sandbox/models/</text>
+<ellipse cx="66.0" cy="891.0" rx="4.0" ry="4.0" fill="rgba(59,130,246,1.0)" stroke="rgba(59,130,246,1.0)" stroke-width="1" opacity="1.0"/>
+<text x="262.0" y="901.775" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="13" fill="rgba(59,130,246,1.0)">11. Run reporter</text>
+<text x="262.0" y="916.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">nemoclaw run reporter generate report</text>
+<text x="262.0" y="930.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Output: /sandbox/reports/final.md</text>
+<ellipse cx="66.0" cy="965.0" rx="4.0" ry="4.0" fill="rgba(59,130,246,1.0)" stroke="rgba(59,130,246,1.0)" stroke-width="1" opacity="1.0"/>
+<text x="262.0" y="975.775" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="13" fill="rgba(59,130,246,1.0)">12. Download report</text>
+<text x="262.0" y="990.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">openshell sandbox download reporter /sandbox/reports/final.md</text>
+<text x="262.0" y="1004.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">reports/final.md</text>
+<ellipse cx="66.0" cy="1039.0" rx="4.0" ry="4.0" fill="rgba(4,120,87,1.0)" stroke="rgba(4,120,87,1.0)" stroke-width="1" opacity="1.0"/>
+<text x="262.0" y="1049.7749999999999" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="13" fill="rgba(4,120,87,1.0)">13. Security demo</text>
+<text x="262.0" y="1064.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">bash scripts/demo-security.sh</text>
+<text x="262.0" y="1078.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Shows: network blocked, FS locked, data separated</text>
+<text x="690.0" y="132.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="20" fill="rgba(30,64,175,1.0)">SANDBOX ARCHITECTURE</text>
+<rect x="480" y="145" width="420" height="245" rx="49.0" fill="rgba(219,234,254,1.0)" stroke="rgba(30,58,95,1.0)" stroke-width="2" stroke-dasharray="none" opacity="1.0"/>
+<text x="685.0" y="180.79999999999998" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="16" fill="rgba(30,64,175,1.0)">Sandbox: data-pipeline</text>
+<rect x="495" y="188" width="390" height="28" rx="5.6000000000000005" fill="rgba(254,243,199,1.0)" stroke="rgba(217,119,6,1.0)" stroke-width="1" stroke-dasharray="6,4" opacity="1.0"/>
+<text x="690.0" y="202.0" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(146,64,14,1.0)">Network: NVIDIA inference ONLY (integrate.api.nvidia.com,</text>
+<text x="690.0" y="215.5" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(146,64,14,1.0)">inference.local)</text>
+<rect x="500" y="228" width="110" height="36" rx="7.2" fill="rgba(237,233,254,1.0)" stroke="rgba(124,58,237,1.0)" stroke-width="1.5" stroke-dasharray="none" opacity="1.0"/>
+<text x="555.0" y="254.10000000000002" text-anchor="middle" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="12" fill="rgba(76,29,149,1.0)">preprocessor</text>
+<rect x="625" y="228" width="110" height="36" rx="7.2" fill="rgba(237,233,254,1.0)" stroke="rgba(124,58,237,1.0)" stroke-width="1.5" stroke-dasharray="none" opacity="1.0"/>
+<text x="680.0" y="254.10000000000002" text-anchor="middle" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="12" fill="rgba(76,29,149,1.0)">architect</text>
+<rect x="750" y="228" width="110" height="36" rx="7.2" fill="rgba(237,233,254,1.0)" stroke="rgba(124,58,237,1.0)" stroke-width="1.5" stroke-dasharray="none" opacity="1.0"/>
+<text x="805.0" y="254.10000000000002" text-anchor="middle" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="12" fill="rgba(76,29,149,1.0)">trainer</text>
+<text x="690.0" y="291.425" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="11" fill="rgba(100,116,139,1.0)">SOUL.md:</text>
+<text x="690.0" y="310.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(124,58,237,1.0)">preprocessor.md    architect.md    trainer.md</text>
+<text x="690.0" y="339.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Data: telco-churn.csv -&gt; clean.parquet</text>
+<text x="690.0" y="359.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Scripts: prepare.py, train.py, render_report.py</text>
+<text x="690.0" y="379.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Deps: pandas, xgboost, scikit-learn, pyarrow</text>
+<text x="690.0" y="399.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(220,38,38,1.0)">Landlock: best_effort (writes blocked outside /sandbox)</text>
+<text x="690.0" y="430.09999999999997" text-anchor="middle" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="12" fill="rgba(100,116,139,1.0)">results uploaded via openshell sandbox upload</text>
+<rect x="480" y="440" width="420" height="215" rx="43.0" fill="rgba(167,243,208,1.0)" stroke="rgba(30,58,95,1.0)" stroke-width="2" stroke-dasharray="none" opacity="1.0"/>
+<text x="685.0" y="475.8" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="16" fill="rgba(4,120,87,1.0)">Sandbox: reporter</text>
+<rect x="495" y="483" width="390" height="28" rx="5.6000000000000005" fill="rgba(254,226,226,1.0)" stroke="rgba(220,38,38,1.0)" stroke-width="1" stroke-dasharray="6,4" opacity="1.0"/>
+<text x="690.0" y="503.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(153,27,27,1.0)">Network: ZERO — all internet blocked</text>
+<rect x="500" y="524" width="110" height="36" rx="7.2" fill="rgba(237,233,254,1.0)" stroke="rgba(124,58,237,1.0)" stroke-width="1.5" stroke-dasharray="none" opacity="1.0"/>
+<text x="555.0" y="550.1" text-anchor="middle" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="12" fill="rgba(76,29,149,1.0)">reporter</text>
+<text x="745.0" y="549.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(100,116,139,1.0)">SOUL.md: reporter.md</text>
+<text x="690.0" y="589.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Data: results.tsv, best.json (NO raw data)</text>
+<text x="690.0" y="609.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Scripts: render_report.py</text>
+<text x="690.0" y="629.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">Deps: pandas, pyarrow</text>
+<text x="690.0" y="649.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(220,38,38,1.0)">Landlock: best_effort (writes blocked outside /sandbox)</text>
+<text x="690.0" y="669.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(4,120,87,1.0)">Output: reports/final.md -&gt; downloaded to host</text>
+<text x="470.0" y="1119.3" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="18" fill="rgba(30,64,175,1.0)">LOCAL HOST — ~/Development/agentic_learning/ (NOT inside any sandbox)</text>
+<path d="M 40 1127 L 900 1127" fill="none" stroke="rgba(100,116,139,1.0)" stroke-width="1" stroke-dasharray="none"/>
+<rect x="40" y="1140" width="400" height="200" rx="40.0" fill="rgba(241,245,249,1.0)" stroke="rgba(30,58,95,1.0)" stroke-width="1.5" stroke-dasharray="none" opacity="1.0"/>
+<text x="240.0" y="1169.425" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="11" fill="rgba(124,58,237,1.0)">policies/</text>
+<text x="240.0" y="1184.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  demo-pipeline-restricted.yaml  -&gt;  data-pipeline</text>
+<text x="240.0" y="1198.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  reporter-restricted.yaml       -&gt;  reporter</text>
+<text x="240.0" y="1217.425" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="11" fill="rgba(124,58,237,1.0)">scripts/</text>
+<text x="240.0" y="1232.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  prepare.py       -&gt;  data-pipeline</text>
+<text x="240.0" y="1246.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  train.py         -&gt;  data-pipeline</text>
+<text x="240.0" y="1260.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  render_report.py -&gt;  BOTH sandboxes</text>
+<text x="240.0" y="1274.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(4,120,87,1.0)">  demo-security.sh -&gt;  HOST (live demo)</text>
+<text x="240.0" y="1288.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(4,120,87,1.0)">  run_pipeline.sh  -&gt;  HOST</text>
+<text x="240.0" y="1307.425" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="11" fill="rgba(124,58,237,1.0)">agents/</text>
+<text x="240.0" y="1322.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  preprocessor.md  -&gt;  data-pipeline</text>
+<text x="240.0" y="1336.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  architect.md     -&gt;  data-pipeline</text>
+<text x="240.0" y="1350.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  trainer.md       -&gt;  data-pipeline</text>
+<text x="240.0" y="1364.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  reporter.md      -&gt;  reporter</text>
+<text x="240.0" y="1383.425" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="11" fill="rgba(124,58,237,1.0)">data/raw/</text>
+<text x="240.0" y="1398.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  telco-churn.csv  -&gt;  data-pipeline</text>
+<text x="240.0" y="1416.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">AGENTS.md          -&gt;  BOTH sandboxes</text>
+<rect x="480" y="1140" width="420" height="200" rx="40.0" fill="rgba(241,245,249,1.0)" stroke="rgba(30,58,95,1.0)" stroke-width="1.5" stroke-dasharray="none" opacity="1.0"/>
+<text x="690.0" y="1170.1000000000001" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="12" fill="rgba(30,64,175,1.0)">SECURITY GUARANTEES (demo-security.sh):</text>
+<text x="690.0" y="1188.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(220,38,38,1.0)">  data-pipeline: curl google.com         BLOCKED</text>
+<text x="690.0" y="1204.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(4,120,87,1.0)">  data-pipeline: curl api.nvidia.com     ALLOWED</text>
+<text x="690.0" y="1220.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(220,38,38,1.0)">  reporter:      curl anywhere           BLOCKED</text>
+<text x="690.0" y="1236.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(220,38,38,1.0)">  reporter:      read /data/raw/         BLOCKED</text>
+<text x="690.0" y="1252.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(220,38,38,1.0)">  both:          write /etc, /usr        BLOCKED</text>
+<text x="690.0" y="1279.425" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="11" fill="rgba(30,64,175,1.0)">KEY PRINCIPLES:</text>
+<text x="690.0" y="1296.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  1. Deny-by-default (YAML allowlist)</text>
+<text x="690.0" y="1312.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  2. Data isolation (raw never reaches reporter)</text>
+<text x="690.0" y="1328.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  3. Landlock FS lock (writes -&gt; /sandbox only)</text>
+<text x="690.0" y="1344.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  4. Policy per sandbox (different rules)</text>
+<text x="690.0" y="1360.75" text-anchor="start" dominant-baseline="alphabetic" font-family="Assistant, -apple-system, sans-serif" font-size="10" fill="rgba(71,85,105,1.0)">  5. No SSHFS (openshell sandbox upload)</text>
+</g>
+</svg>

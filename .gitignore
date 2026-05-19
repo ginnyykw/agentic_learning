@@ -1,0 +1,21 @@
+# Generated artifacts — not committed
+data/clean/
+models/
+runs/
+reports/
+
+# Virtual environment
+.venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Hermes local state
+.claude/
