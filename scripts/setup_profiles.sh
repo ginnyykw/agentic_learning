@@ -5,7 +5,8 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-HERMES_HOME="${HERMES_HOME:-$HOME/.hermes}"
+# HERMES_HOME="${HERMES_HOME:-$HOME/.hermes}"
+HERMES_HOME="/sandbox/.hermes"
 PROFILES_DIR="$HERMES_HOME/profiles"
 
 # Sandbox names
@@ -18,6 +19,13 @@ if ! command -v hermes >/dev/null 2>&1; then
   echo "error: hermes binary not found on PATH" >&2
   exit 1
 fi
+
+# Return 0 if Hermes already has this profile inside the sandbox (see: hermes profile list).
+hermes_profile_exists() {
+  local sb_name="$1" role="$2"
+  openshell sandbox exec -n "$sb_name" bash -c \
+    "hermes profile list 2>/dev/null | grep -q '^[ ◆]*${role} '"
+}
 
 for role in "${ROLES[@]}"; do
   # persona="$REPO_ROOT/skills/$role/SKILL.md"
@@ -34,12 +42,11 @@ for role in "${ROLES[@]}"; do
   fi
 
   profile_dir="$PROFILES_DIR/$role"
-  if [[ -d "$profile_dir" ]]; then
+  if hermes_profile_exists "$sb_name" "$role"; then
     echo "[$role] profile exists — refreshing SOUL.md"
   else
     echo "[$role] creating profile"
-    openshell sandbox exec -n $sb_name bash -c "hermes profile create $role"
-    # hermes profile create "$role"
+    openshell sandbox exec -n "$sb_name" bash -c "hermes profile create $role"
   fi
 
   # Materialize the skill as the profile's SOUL.md.
