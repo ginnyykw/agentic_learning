@@ -36,13 +36,12 @@ Run from the repository root.
 ### 1. Create the sandboxes
 
 Each uses an interactive wizard. When prompted, select:
-- Agent runtime: `hermes`
-- Model: `nvidia/nemotron-3-super-120b-a12b` (or your preferred model)
-- Inference provider: NVIDIA prod (or your configured provider)
+- Inference provider: `Local Ollama`
+- Model: `qwen3.6:35b` (or your preferred model)
 
 ```bash
-nemoclaw onboard --name data-pipeline
-nemoclaw onboard --name reporter
+nemoclaw onboard --agent hermes --name data-pipeline
+nemoclaw onboard --agent hermes --name reporter
 ```
 
 ### 2. Apply network policies
@@ -119,33 +118,80 @@ openshell policy get reporter
 
 ## Running the Pipeline
 
-### Full run (all four stages)
+Sandboxes:
+  data-pipeline    → NVIDIA inference only (blocked: everything else)
+  reporter         → ZERO network (completely blocked)
+
+Files uploaded:
+  data-pipeline: telco-churn.csv, prepare.py, train.py,
+                 skills/preprocessor/SKILL.md, skills/architect/SKILL.md,
+                 skills/trainer/SKILL.md, AGENTS.md
+  reporter:      render_report.py, skills/reporter/SKILL.md, AGENTS.md
+
+Next steps:
+    1. Run the pipeline:
+       bash scripts/run_pipeline.sh data/raw/telco-churn.csv Churn
+
+    2. Upload results to reporter:
+
+       openshell sandbox upload reporter runs/results.tsv /sandbox/runs
+       openshell sandbox upload reporter runs/live/best.json /sandbox/runs/live
+       openshell sandbox upload reporter models/*.pkl /sandbox/models
+       openshell sandbox upload reporter data/clean/profile.json /sandbox/data/clean
+
+    3. Run reporter:
+       openshell sandbox exec -n data-pipeline bash -c "hermes -p reporter chat -t terminal,file \
+       -q "Render the final report" --yolo"
+
+    4. Download report:
+       openshell sandbox download reporter /sandbox/reports/final.md reports/final.md
+
+    5. Run security demo:
+       bash scripts/demo-security.sh
+
+
+### Full run for data-pipeline sandbox (preprocessor -> architect -> trainer)
 
 ```bash
-source .venv/bin/activate
 bash scripts/run_pipeline.sh data/raw/telco-churn.csv Churn
 ```
 
 ### Step by step (recommended for demos)
 
 ```bash
-source .venv/bin/activate
-
 # 1. Preprocess — clean data and generate profile
-hermes -p preprocessor chat -t terminal,file \
-  -q "Process data/raw/telco-churn.csv with target=Churn" --yolo
+openshell sandbox exec -n data-pipeline bash -c "hermes -p preprocessor \
+chat -t terminal.file -q "Process $INPUT with target=$TARGET" --yolo"
 
 # 2. Architect — queue 2-3 model configs based on profile
-hermes -p architect chat -t file \
-  -q "Read data/clean/profile.json and queue 2-3 configs" --yolo
+openshell sandbox exec -n data-pipeline bash -c "hermes -p architect chat -t file \
+-q "Read data/clean/profile.json and queue 2-3 configs" --yolo"
 
 # 3. Train — execute every queued config
-hermes -p trainer chat -t terminal,file \
-  -q "Drain runs/queue/" --yolo
+openshell sandbox exec -n data-pipeline bash -c "hermes -p trainer chat -t terminal,file \
+-q "Train runs/queue/" --yolo"
 
-# 4. Report — generate client-facing report
-hermes -p reporter chat -t terminal,file \
-  -q "Render the final report" --yolo
+# Download the files for report generation:
+openshell sandbox download data-pipeline /sandbox/runs/live/best.json runs/live
+openshell sandbox download data-pipeline /sandbox/runs/results.tsv runs
+openshell sandbox download data-pipeline /sandbox/models/*.pkl models
+openshell sandbox download data-pipeline /sandbox/data/clean/profile.json data/clean
+```
+
+### Upload results to reporter and generate the report:
+
+```bash
+openshell sandbox upload reporter runs/results.tsv /sandbox/runs
+openshell sandbox upload reporter runs/live/best.json /sandbox/runs/live
+openshell sandbox upload reporter models/*.pkl /sandbox/models
+openshell sandbox upload reporter data/clean/profile.json /sandbox/data/clean
+
+# Report — generate client-facing report
+openshell sandbox exec -n reporter bash -c "hermes -p reporter chat -t terminal,file \
+  -q "Render the final report" --yolo"
+
+# Download report
+openshell sandbox download reporter /sandbox/reports/final.md reports/final.md
 ```
 
 ### Security demo

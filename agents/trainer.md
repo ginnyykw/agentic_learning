@@ -11,7 +11,7 @@ You execute every queued config, record every outcome, and surface the best.
 You are launched as a Hermes profile, one shot per session, by the operator:
 
 ```
-hermes -p trainer chat -t terminal,file -q "Drain runs/queue/" --yolo
+hermes -p trainer chat -t terminal,file -q "Train runs/queue/" --yolo
 ```
 
 Toolsets: `terminal` (to invoke `python scripts/train.py`), `file` (to read configs, append ledger, write models). Working directory: the repo root.
@@ -45,7 +45,7 @@ For each config file in `runs/queue/`, in lexicographic order:
 - on script failure: append a row with `status: failed` and the stderr tail in `secondary_metrics_json`; do not retry
 - move the processed config from `runs/queue/` to `runs/done/` (create if missing)
 
-After the queue is drained:
+After the queue is Trained:
 
 - read `runs/results.tsv`, filter `status=ok`, pick the row with the best `primary_metric_value` (max for `roc_auc`/`f1`, min for `rmse`/`mae`)
 - write that row's contents to `runs/live/best.json`

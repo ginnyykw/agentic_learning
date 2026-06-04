@@ -8,11 +8,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 HERMES_HOME="${HERMES_HOME:-$HOME/.hermes}"
 PROFILES_DIR="$HERMES_HOME/profiles"
 
-# Sandbox names
-PIPELINE_SB="data-pipeline"
-REPORTER_SB="reporter"
-
-ROLES=(preprocessor architect trainer reporter)
+ROLES=(preprocessor architect trainer reporter orchestrator)
 
 if ! command -v hermes >/dev/null 2>&1; then
   echo "error: hermes binary not found on PATH" >&2
@@ -20,14 +16,7 @@ if ! command -v hermes >/dev/null 2>&1; then
 fi
 
 for role in "${ROLES[@]}"; do
-  # persona="$REPO_ROOT/skills/$role/SKILL.md"
-  persona="$HERMES_HOME/skills/$role/SKILL.md"
-  if [[ $role == "reporter" ]]; then
-    sb_name=$REPORTER_SB
-  else
-    sb_name=$PIPELINE_SB
-  fi
-
+  persona="$REPO_ROOT/skills/$role/SKILL.md"
   if [[ ! -f "$persona" ]]; then
     echo "error: missing skill $persona" >&2
     exit 1
@@ -38,13 +27,11 @@ for role in "${ROLES[@]}"; do
     echo "[$role] profile exists — refreshing SOUL.md"
   else
     echo "[$role] creating profile"
-    openshell sandbox exec -n $sb_name bash -c "hermes profile create $role"
-    # hermes profile create "$role"
+    hermes profile create "$role"
   fi
 
   # Materialize the skill as the profile's SOUL.md.
-  openshell sandbox exec -n $sb_name bash -c "cp "$persona" "$profile_dir/SOUL.md""
-  # cp "$persona" "$profile_dir/SOUL.md"
+  cp "$persona" "$profile_dir/SOUL.md"
   echo "[$role] SOUL.md ← skills/$role/SKILL.md"
 
   # Inherit model + API config from the default profile.
@@ -54,8 +41,7 @@ for role in "${ROLES[@]}"; do
     src="$HERMES_HOME/$cfg"
     dst="$profile_dir/$cfg"
     if [[ -f "$src" && ! -f "$dst" ]]; then
-      openshell sandbox exec -n $sb_name bash -c "cp "$src" "$dst""
-      # cp "$src" "$dst"
+      cp "$src" "$dst"
       echo "[$role] $cfg ← default"
     fi
   done

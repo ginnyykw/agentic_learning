@@ -238,6 +238,19 @@ done
 
 info "Applying $REPORTER_SB policy: reporter-setup.yaml"
 run "openshell policy set --policy $REPORTER_SETUP_POLICY $REPORTER_SB --wait"
+
+# Install Python deps in reporter
+info "Installing Python dependencies in $REPORTER_SB..."
+run "openshell sandbox exec -n $REPORTER_SB bash -c 'python3 -m venv /sandbox/.venv && /sandbox/.venv/bin/pip install pandas pyarrow openpyxl'"
+pass "Python deps installed in $REPORTER_SB"
+
+info "Removing default presets from $REPORTER_SB..."
+for preset in npm pypi huggingface brew brave github; do
+    run "echo '' | nemoclaw $REPORTER_SB policy-remove --yes 2>/dev/null <<< '$preset'" || true
+done
+
+info "Applying $REPORTER_SB policy: reporter-restricted.yaml"
+run "openshell policy set --policy $REPORTER_POLICY $REPORTER_SB --wait"
 pass "$REPORTER_SB policy applied (ZERO network)"
 
 # ===================================================================
@@ -249,7 +262,6 @@ UPLOAD_PIPE=(
     "data/raw/telco-churn.csv:/sandbox/data/raw"
     "scripts/prepare.py:/sandbox/scripts"
     "scripts/train.py:/sandbox/scripts"
-    "scripts/render_report.py:/sandbox/scripts"
     "skills/preprocessor/SKILL.md:/sandbox/skills/preprocessor"
     "skills/architect/SKILL.md:/sandbox/skills/architect"
     "skills/trainer/SKILL.md:/sandbox/skills/trainer"
@@ -289,21 +301,6 @@ for upload in "${UPLOAD_RPT[@]}"; do
 done
 
 pass "All files uploaded to $REPORTER_SB"
-
-# Install Python deps in reporter
-info "Installing Python dependencies in $REPORTER_SB..."
-run "openshell sandbox exec -n $REPORTER_SB bash -c 'python3 -m venv /sandbox/.venv && /sandbox/.venv/bin/pip install pandas pyarrow openpyxl'"
-pass "Python deps installed in $REPORTER_SB"
-
-
-info "Removing default presets from $REPORTER_SB..."
-for preset in npm pypi huggingface brew brave github; do
-    run "echo '' | nemoclaw $REPORTER_SB policy-remove --yes 2>/dev/null <<< '$preset'" || true
-done
-
-info "Applying $REPORTER_SB policy: reporter-restricted.yaml"
-run "openshell policy set --policy $REPORTER_POLICY $REPORTER_SB --wait"
-pass "$REPORTER_SB policy applied (ZERO network)"
 
 # ===================================================================
 # SETUP LOCAL HERMES PROFILES
@@ -346,7 +343,7 @@ cat <<'EOF'
     reporter         → ZERO network (completely blocked)
 
   Files uploaded:
-    data-pipeline: telco-churn.csv, prepare.py, train.py, render_report.py,
+    data-pipeline: telco-churn.csv, prepare.py, train.py,
                    skills/preprocessor/SKILL.md, skills/architect/SKILL.md,
                    skills/trainer/SKILL.md, AGENTS.md
     reporter:      render_report.py, skills/reporter/SKILL.md, AGENTS.md
@@ -356,12 +353,15 @@ cat <<'EOF'
        bash scripts/run_pipeline.sh data/raw/telco-churn.csv Churn
 
     2. Upload results to reporter:
-       openshell sandbox upload reporter runs/results.tsv /sandbox/data/results.tsv
-       openshell sandbox upload reporter runs/live/best.json /sandbox/data/best.json
-       openshell sandbox upload reporter models/*.pkl /sandbox/models/
+
+       openshell sandbox upload reporter runs/results.tsv /sandbox/runs
+       openshell sandbox upload reporter runs/live/best.json /sandbox/runs/live
+       openshell sandbox upload reporter models/*.pkl /sandbox/models
+       openshell sandbox upload reporter data/clean/profile.json /sandbox/data/clean
 
     3. Run reporter:
-       nemoclaw run reporter "generate report from /sandbox/data/best.json"
+       openshell sandbox exec -n data-pipeline bash -c "hermes -p reporter chat -t terminal,file \
+       -q "Render the final report" --yolo"
 
     4. Download report:
        openshell sandbox download reporter /sandbox/reports/final.md reports/final.md
