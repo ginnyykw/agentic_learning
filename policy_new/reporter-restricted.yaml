@@ -1,0 +1,40 @@
+# Reporter sandbox policy — zero network egress.
+# The reporter reads ledger/best.json/profile.json and writes reports.
+# It has no need for any network access.
+#
+# Filesystem policy is locked at sandbox creation and cannot be changed
+# via policy set, so it must be included here from the live sandbox.
+
+version: 1
+filesystem_policy:
+  include_workdir: true
+  read_only:
+    - /usr
+    - /lib
+    - /opt/hermes
+    - /proc
+    - /dev/urandom
+    - /app
+    - /etc
+    - /var/log
+  read_write:
+    - /sandbox
+    - /tmp
+    - /dev/null
+    - /sandbox/.hermes
+    - /sandbox/.openclaw
+    - /sandbox/.nemoclaw
+    - /home/linuxbrew
+    - /proc
+    - /sandbox
+    - /dev/nvidiactl
+    - /dev/nvidia-uvm
+    - /dev/nvidia-uvm-tools
+    - /dev/nvidia-modeset
+    - /dev/nvidia0
+landlock:
+  compatibility: best_effort
+process:
+  run_as_user: sandbox
+  run_as_group: sandbox
+# No network_policies — completely blocked
