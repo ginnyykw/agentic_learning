@@ -48,8 +48,9 @@ PIPELINE_SB="data-pipeline"
 REPORTER_SB="reporter"
 
 # Policy files
-PIPELINE_POLICY="$REPO_ROOT/policy/demo-pipeline-restricted.yaml"
-REPORTER_POLICY="$REPO_ROOT/policy/reporter-restricted.yaml"
+PIPELINE_POLICY="$REPO_ROOT/policy_new/demo-pipeline-restricted.yaml"
+REPORTER_SETUP_POLICY="$REPO_ROOT/policy_new/reporter-setup.yaml"
+REPORTER_POLICY="$REPO_ROOT/policy_new/reporter-restricted.yaml"
 
 # ── Helpers ─────────────────────────────────────────────────────────────────
 run() {
@@ -157,7 +158,7 @@ if sandbox_exists "$PIPELINE_SB"; then
 fi
 
 info "Onboarding $PIPELINE_SB..."
-info "Running: nemoclaw onboard --name $PIPELINE_SB"
+info "Running: nemoclaw onboard --agent hermes --name $PIPELINE_SB"
 info "  When prompted:"
 info "    Agent: hermes"
 info "    Model: nvidia/nemotron-3-super-120b-a12b"
@@ -177,7 +178,7 @@ else
         echo "  Then follow the wizard prompts."
         exit 1
     fi
-    nemoclaw onboard --name "$PIPELINE_SB"
+    nemoclaw onboard --agent hermes --name "$PIPELINE_SB"
 fi
 
 pass "$PIPELINE_SB created"
@@ -196,7 +197,7 @@ if sandbox_exists "$REPORTER_SB"; then
 fi
 
 info "Onboarding $REPORTER_SB..."
-info "Running: nemoclaw onboard --name $REPORTER_SB"
+info "Running: nemoclaw onboard --agent hermes --name $REPORTER_SB"
 info "  When prompted:"
 info "    Agent: hermes"
 info "    Model: nvidia/nemotron-3-super-120b-a12b"
@@ -211,7 +212,7 @@ else
         echo -e "${YELLOW}WARNING: No TTY detected — cannot run interactive wizard${NC}"
         exit 1
     fi
-    nemoclaw onboard --name "$REPORTER_SB"
+    nemoclaw onboard --agent hermes --name "$REPORTER_SB"
 fi
 
 pass "$REPORTER_SB created"
@@ -235,8 +236,8 @@ for preset in npm pypi huggingface brew brave github; do
     run "echo '' | nemoclaw $REPORTER_SB policy-remove --yes 2>/dev/null <<< '$preset'" || true
 done
 
-info "Applying $REPORTER_SB policy: reporter-restricted.yaml"
-run "openshell policy set --policy $REPORTER_POLICY $REPORTER_SB --wait"
+info "Applying $REPORTER_SB policy: reporter-setup.yaml"
+run "openshell policy set --policy $REPORTER_SETUP_POLICY $REPORTER_SB --wait"
 pass "$REPORTER_SB policy applied (ZERO network)"
 
 # ===================================================================
@@ -245,14 +246,14 @@ pass "$REPORTER_SB policy applied (ZERO network)"
 section "6. Uploading files to $PIPELINE_SB"
 
 UPLOAD_PIPE=(
-    "data/raw/telco-churn.csv:/sandbox/data/raw/telco-churn.csv"
-    "scripts/prepare.py:/sandbox/scripts/prepare.py"
-    "scripts/train.py:/sandbox/scripts/train.py"
-    "scripts/render_report.py:/sandbox/scripts/render_report.py"
-    "skills/preprocessor/SKILL.md:/sandbox/skills/preprocessor/SKILL.md"
-    "skills/architect/SKILL.md:/sandbox/skills/architect/SKILL.md"
-    "skills/trainer/SKILL.md:/sandbox/skills/trainer/SKILL.md"
-    "AGENTS.md:/sandbox/AGENTS.md"
+    "data/raw/telco-churn.csv:/sandbox/data/raw"
+    "scripts/prepare.py:/sandbox/scripts"
+    "scripts/train.py:/sandbox/scripts"
+    "scripts/render_report.py:/sandbox/scripts"
+    "skills/preprocessor/SKILL.md:/sandbox/skills/preprocessor"
+    "skills/architect/SKILL.md:/sandbox/skills/architect"
+    "skills/trainer/SKILL.md:/sandbox/skills/trainer"
+    "AGENTS.md:/sandbox"
 )
 
 for upload in "${UPLOAD_PIPE[@]}"; do
@@ -275,9 +276,9 @@ pass "Python deps installed in $PIPELINE_SB"
 section "7. Uploading files to $REPORTER_SB"
 
 UPLOAD_RPT=(
-    "scripts/render_report.py:/sandbox/scripts/render_report.py"
-    "skills/reporter/SKILL.md:/sandbox/skills/reporter/SKILL.md"
-    "AGENTS.md:/sandbox/AGENTS.md"
+    "scripts/render_report.py:/sandbox/scripts"
+    "skills/reporter/SKILL.md:/sandbox/skills/reporter"
+    "AGENTS.md:/sandbox"
 )
 
 for upload in "${UPLOAD_RPT[@]}"; do
@@ -293,6 +294,16 @@ pass "All files uploaded to $REPORTER_SB"
 info "Installing Python dependencies in $REPORTER_SB..."
 run "openshell sandbox exec -n $REPORTER_SB bash -c 'python3 -m venv /sandbox/.venv && /sandbox/.venv/bin/pip install pandas pyarrow openpyxl'"
 pass "Python deps installed in $REPORTER_SB"
+
+
+info "Removing default presets from $REPORTER_SB..."
+for preset in npm pypi huggingface brew brave github; do
+    run "echo '' | nemoclaw $REPORTER_SB policy-remove --yes 2>/dev/null <<< '$preset'" || true
+done
+
+info "Applying $REPORTER_SB policy: reporter-restricted.yaml"
+run "openshell policy set --policy $REPORTER_POLICY $REPORTER_SB --wait"
+pass "$REPORTER_SB policy applied (ZERO network)"
 
 # ===================================================================
 # SETUP LOCAL HERMES PROFILES
