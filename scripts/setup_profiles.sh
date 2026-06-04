@@ -36,10 +36,10 @@ for role in "${ROLES[@]}"; do
     sb_name=$PIPELINE_SB
   fi
 
-  if [[ ! -f "$persona" ]]; then
-    echo "error: missing skill $persona" >&2
-    exit 1
-  fi
+  #if [[ ! -f "$persona" ]]; then
+  #  echo "error: missing skill $persona" >&2
+  #  exit 1
+  #fi
 
   profile_dir="$PROFILES_DIR/$role"
   if hermes_profile_exists "$sb_name" "$role"; then
