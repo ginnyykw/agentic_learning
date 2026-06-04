@@ -6,8 +6,8 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # HERMES_HOME="${HERMES_HOME:-$HOME/.hermes}"
-HERMES_HOME="/sandbox/.hermes"
-PROFILES_DIR="$HERMES_HOME/profiles"
+HERMES_HOME="/sandbox"
+PROFILES_DIR="$HERMES_HOME/.hermes/profiles"
 
 # Sandbox names
 PIPELINE_SB="data-pipeline"
