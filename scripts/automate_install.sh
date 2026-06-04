@@ -113,20 +113,20 @@ pass "Hermes configured to use local Ollama"
 # ===================================================================
 # 5. SETUP AGENT PROFILES
 # ===================================================================
-section "5. Setting up Agent Profiles"
-if [[ -f "scripts/setup_profiles.sh" ]]; then
-    info "Running scripts/setup_profiles.sh..."
-    bash scripts/setup_profiles.sh
-    pass "Agent profiles created"
-else
-    echo -e "${RED}Error: scripts/setup_profiles.sh not found${NC}"
-    exit 1
-fi
+#section "5. Setting up Agent Profiles"
+#if [[ -f "scripts/setup_profiles.sh" ]]; then
+#    info "Running scripts/setup_profiles.sh..."
+#    bash scripts/setup_profiles.sh
+#    pass "Agent profiles created"
+#else
+#    echo -e "${RED}Error: scripts/setup_profiles.sh not found${NC}"
+#    exit 1
+#fi
 
 # ===================================================================
-# 6. SETUP LOCAL VENV & REQUIREMENTS
+# 5. SETUP LOCAL VENV & REQUIREMENTS
 # ===================================================================
-section "6. Setting up local Virtual Environment"
+section "5. Setting up local Virtual Environment"
 info "Creating venv with Python $PYTHON_VERSION..."
 uv venv --python "$PYTHON_VERSION"
 source .venv/bin/activate
@@ -136,9 +136,9 @@ uv pip install -r requirements.txt
 pass "Local environment ready"
 
 # ===================================================================
-# 7. SANDBOX ONBOARDING (NON-INTERACTIVE ATTEMPT)
+# 6. SANDBOX ONBOARDING (NON-INTERACTIVE ATTEMPT)
 # ===================================================================
-#section "7. Initializing NemoClaw Sandboxes"
+#section "6. Initializing NemoClaw Sandboxes"
 
 # We attempt to automate the 'nemoclaw onboard' by piping the expected answers.
 # Typical sequence: 1 (hermes), then the model name, then the provider.
@@ -166,9 +166,9 @@ onboard_sandbox() {
 #onboard_sandbox "reporter"
 
 # ===================================================================
-# 8. FINAL SETUP (POLICIES & UPLOADS)
+# 6. SANDBOX SETUP (POLICIES & UPLOADS)
 # ===================================================================
-section "8. Running Final Setup"
+section "6. Sandbox Setup"
 info "Running scripts/setup-demo.sh --skip-gateway..."
 # We skip gateway if it's already handled or needs sudo
 bash scripts/setup-demo.sh --skip-gateway || info "Note: setup-demo.sh had some issues, likely due to interactive parts."
