@@ -71,10 +71,10 @@ echo "=========================================================="
 date
 
 DOWNLOAD_RPT=(
-    "/sandbox/runs/live/best.json:$REPO_ROOT/runs/live"
-    "/sandbox/runs/results.tsv:$REPO_ROOT/runs"
-    "/sandbox/models/*.pkl:$REPO_ROOT/models"
-    "/sandbox/data/clean/profile.json:$REPO_ROOT/data/clean"
+    "/sandbox/runs/live/best.json:$REPO_ROOT/runs/live/best.json"
+    "/sandbox/runs/results.tsv:$REPO_ROOT/runs/results.tsv"
+    "/sandbox/data/clean/profile.json:$REPO_ROOT/data/clean/profile.json"
+    "/sandbox/models/:$REPO_ROOT/models"
 )
 
 for download in "${DOWNLOAD_RPT[@]}"; do

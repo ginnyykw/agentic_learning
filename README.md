@@ -172,10 +172,10 @@ openshell sandbox exec -n data-pipeline bash -c "hermes -p trainer chat -t termi
 -q "Train runs/queue/" --yolo"
 
 # Download the files for report generation:
-openshell sandbox download data-pipeline /sandbox/runs/live/best.json runs/live
-openshell sandbox download data-pipeline /sandbox/runs/results.tsv runs
-openshell sandbox download data-pipeline /sandbox/models/*.pkl models
-openshell sandbox download data-pipeline /sandbox/data/clean/profile.json data/clean
+openshell sandbox download data-pipeline /sandbox/runs/live/best.json runs/live/best.json
+openshell sandbox download data-pipeline /sandbox/runs/results.tsv runs/results.tsv
+openshell sandbox download data-pipeline /sandbox/models/ models
+openshell sandbox download data-pipeline /sandbox/data/clean/profile.json data/clean/profile.json
 ```
 
 ### Upload results to reporter and generate the report:

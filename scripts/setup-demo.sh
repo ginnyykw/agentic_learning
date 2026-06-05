@@ -279,7 +279,7 @@ pass "All files uploaded to $PIPELINE_SB"
 
 # Install Python deps in data-pipeline
 info "Installing Python dependencies in $PIPELINE_SB..."
-run "openshell sandbox exec -n $PIPELINE_SB bash -c 'python3 -m venv /sandbox/.venv && /sandbox/.venv/bin/pip install pandas pyarrow scikit-learn xgboost openpyxl'"
+run "openshell sandbox exec -n $PIPELINE_SB bash -c 'python3 -m venv /sandbox/.venv && /sandbox/.venv/bin/pip install pandas pyarrow scikit-learn xgboost openpyxlfnu numpy'"
 pass "Python deps installed in $PIPELINE_SB"
 
 # ===================================================================
@@ -354,13 +354,12 @@ cat <<'EOF'
 
     2. Upload results to reporter:
 
-       openshell sandbox upload reporter runs/results.tsv /sandbox/runs
-       openshell sandbox upload reporter runs/live/best.json /sandbox/runs/live
-       openshell sandbox upload reporter models/*.pkl /sandbox/models
-       openshell sandbox upload reporter data/clean/profile.json /sandbox/data/clean
+       openshell sandbox upload reporter runs/ /sandbox
+       openshell sandbox upload reporter data/clean/ /sandbox
+       openshell sandbox upload reporter models/ /sandbox
 
     3. Run reporter:
-       openshell sandbox exec -n data-pipeline bash -c "hermes -p reporter chat -t terminal,file \
+       openshell sandbox exec -n reporter bash -c "hermes -p reporter chat -t terminal,file \
        -q "Render the final report" --yolo"
 
     4. Download report:
