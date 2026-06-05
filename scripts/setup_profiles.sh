@@ -60,7 +60,7 @@ for role in "${ROLES[@]}"; do
   for cfg in config.yaml .env; do
     src="$HERMES_HOME/.hermes/$cfg"
     dst="$profile_dir/$cfg"
-    
+
     #if [[ -f "$src" && ! -f "$dst" ]]; then
     if openshell sandbox exec -n "$sb_name" bash -c "test -f \"$src\" && ! test -f \"$dst\""; then
       openshell sandbox exec -n "$sb_name" bash -c "cp \"$src\" \"$dst\""
@@ -72,6 +72,6 @@ done
 
 echo
 echo "Done. Profiles ready:"
-hermes profile list
+# hermes profile list
 echo
 echo "Per-profile sanity check (optional): hermes -p <role> doctor"
