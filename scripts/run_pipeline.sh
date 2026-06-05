@@ -82,9 +82,12 @@ for download in "${DOWNLOAD_RPT[@]}"; do
     remote_dst="${download##*:}"
     echo "Downloading $local_src -> $remote_dst"
     openshell sandbox download data-pipeline $local_src $remote_dst
-
-    cp "$remote_dst" "${remote_dst}1"
 done
+
+cp -r "$REPO_ROOT/runs" "$REPO_ROOT/runs1"
+cp -r "$REPO_ROOT/models" "$REPO_ROOT/models1"
+cp -r "$REPO_ROOT/data/clean/" "$REPO_ROOT/data1"
+
 
 echo
 echo "=========================================================="
