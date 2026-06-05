@@ -50,7 +50,7 @@ for role in "${ROLES[@]}"; do
   fi
 
   # Materialize the skill as the profile's SOUL.md.
-  openshell sandbox exec -n $sb_name bash -c "cp "$persona" "$profile_dir/SOUL.md""
+  openshell sandbox exec -n "$sb_name" bash -c "cp \"$persona\" \"$profile_dir/SOUL.md\""
   # cp "$persona" "$profile_dir/SOUL.md"
   echo "[$role] SOUL.md ← skills/$role/SKILL.md"
 
@@ -60,8 +60,10 @@ for role in "${ROLES[@]}"; do
   for cfg in config.yaml .env; do
     src="$HERMES_HOME/.hermes/$cfg"
     dst="$profile_dir/$cfg"
-    if [[ -f "$src" && ! -f "$dst" ]]; then
-      openshell sandbox exec -n $sb_name bash -c "cp "$src" "$dst""
+    
+    #if [[ -f "$src" && ! -f "$dst" ]]; then
+    if openshell sandbox exec -n "$sb_name" bash -c "test -f \"$src\" && ! test -f \"$dst\""; then
+      openshell sandbox exec -n "$sb_name" bash -c "cp \"$src\" \"$dst\""
       # cp "$src" "$dst"
       echo "[$role] $cfg ← default"
     fi
