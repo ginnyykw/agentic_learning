@@ -128,27 +128,6 @@ Files uploaded:
                  skills/trainer/SKILL.md, AGENTS.md
   reporter:      render_report.py, skills/reporter/SKILL.md, AGENTS.md
 
-Next steps:
-    1. Run the pipeline:
-       bash scripts/run_pipeline.sh data/raw/telco-churn.csv Churn
-
-    2. Upload results to reporter:
-
-       openshell sandbox upload reporter runs/results.tsv /sandbox/runs
-       openshell sandbox upload reporter runs/live/best.json /sandbox/runs/live
-       openshell sandbox upload reporter models/*.pkl /sandbox/models
-       openshell sandbox upload reporter data/clean/profile.json /sandbox/data/clean
-
-    3. Run reporter:
-       openshell sandbox exec -n data-pipeline bash -c "hermes -p reporter chat -t terminal,file \
-       -q "Render the final report" --yolo"
-
-    4. Download report:
-       openshell sandbox download reporter /sandbox/reports/final.md reports/final.md
-
-    5. Run security demo:
-       bash scripts/demo-security.sh
-
 
 ### Full run for data-pipeline sandbox (preprocessor -> architect -> trainer)
 
