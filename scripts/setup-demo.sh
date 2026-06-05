@@ -279,7 +279,7 @@ pass "All files uploaded to $PIPELINE_SB"
 
 # Install Python deps in data-pipeline
 info "Installing Python dependencies in $PIPELINE_SB..."
-run "openshell sandbox exec -n $PIPELINE_SB bash -c 'python3 -m venv /sandbox/.venv && /sandbox/.venv/bin/pip install pandas pyarrow scikit-learn xgboost openpyxlfnu numpy'"
+run "openshell sandbox exec -n $PIPELINE_SB bash -c 'python3 -m venv /sandbox/.venv && /sandbox/.venv/bin/pip install pandas pyarrow scikit-learn xgboost openpyxl numpy'"
 pass "Python deps installed in $PIPELINE_SB"
 
 # ===================================================================
