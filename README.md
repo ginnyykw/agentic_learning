@@ -181,10 +181,9 @@ openshell sandbox download data-pipeline /sandbox/data/clean/profile.json data/c
 ### Upload results to reporter and generate the report:
 
 ```bash
-openshell sandbox upload reporter runs/results.tsv /sandbox/runs
-openshell sandbox upload reporter runs/live/best.json /sandbox/runs/live
-openshell sandbox upload reporter models/*.pkl /sandbox/models
-openshell sandbox upload reporter data/clean/profile.json /sandbox/data/clean
+openshell sandbox upload reporter runs1/ /sandbox
+openshell sandbox upload reporter data1/ /sandbox
+openshell sandbox upload reporter models1/ /sandbox
 
 # Report — generate client-facing report
 openshell sandbox exec -n reporter bash -c "hermes -p reporter chat -t terminal,file \
