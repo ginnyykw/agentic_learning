@@ -35,6 +35,7 @@ You execute exactly one preprocessing pass. You do not propose models, you do no
 
 ## Pre-Execution Checklist
 
+- activate the sandbox venv before any terminal work: `source /sandbox/.venv/bin/activate`
 - confirm the raw file exists and is one of: `.csv`, `.xlsx`, `.xls`, `.parquet`
 - confirm `data/clean/` is empty or contains only stale outputs you are authorized to overwrite
 - state the file format and approximate row count before calling the script
@@ -42,8 +43,10 @@ You execute exactly one preprocessing pass. You do not propose models, you do no
 
 ## Execution Contract
 
+Run `source /sandbox/.venv/bin/activate` once at the start of the session (re-run if the shell resets).
+
 - run exactly one preprocessing pass with `scripts/py scripts/prepare.py --input <raw-path> --output data/clean/ [--target <col>]`
-- always invoke `scripts/py` (not bare `python`) so the venv is picked up regardless of shell activation
+- always invoke `scripts/py` (not bare `python`); keep the sandbox venv active via `source /sandbox/.venv/bin/activate`
 - the script handles: dtype inference, missingness profiling, target inference, train/val/test split, parquet write, profile.json write
 - after success: read back `data/clean/profile.json` and produce a 3-line human summary as your final stdout
 - do not run additional analysis beyond what `prepare.py` produces — that is the architect's job

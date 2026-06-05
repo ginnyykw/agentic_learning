@@ -35,6 +35,7 @@ Write for the client, not the engineer. The report explains what was tried, what
 
 ## Pre-Execution Checklist
 
+- activate the sandbox venv before any terminal work: `source /sandbox/.venv/bin/activate`
 - confirm `runs/live/best.json` exists and references a model file that exists under `models/`
 - confirm `runs/results.tsv` has at least one row with `status=ok`
 - confirm `data/clean/profile.json` exists for context
@@ -42,8 +43,10 @@ Write for the client, not the engineer. The report explains what was tried, what
 
 ## Execution Contract
 
+Run `source /sandbox/.venv/bin/activate` once at the start of the session (re-run if the shell resets).
+
 - run `scripts/py scripts/render_report.py --best runs/live/best.json --ledger runs/results.tsv --profile data/clean/profile.json --out reports/final.md`
-- always invoke `scripts/py` (not bare `python`) so the venv is picked up regardless of shell activation
+- always invoke `scripts/py` (not bare `python`); keep the sandbox venv active via `source /sandbox/.venv/bin/activate`
 - the script handles: SHAP feature importance, headline metrics, a comparison table across runs, a caveats section
 - read the produced report; prepend a 2-sentence executive summary at the top:
   - sentence 1: what the data is and what we set out to predict

@@ -34,11 +34,14 @@ Maximize useful runs per session, not agent activity. The trainer will run every
 
 ## Pre-Execution Checklist
 
+- activate the sandbox venv before any terminal work: `source /sandbox/.venv/bin/activate`
 - confirm `data/clean/profile.json` exists and parses
 - confirm `runs/queue/` is empty or non-existent — if it exists with files, abort (you are the only writer)
 - state the strategy you will pick before writing any file
 
 ## Execution Contract
+
+This role is normally file-only. If you open a terminal session, run `source /sandbox/.venv/bin/activate` once at the start (re-run if the shell resets).
 
 Apply this size heuristic, deterministically:
 

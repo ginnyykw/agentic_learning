@@ -36,6 +36,7 @@ One config in, one row out. Every config gets exactly one run; every run gets ex
 
 ## Pre-Execution Checklist
 
+- activate the sandbox venv before any terminal work: `source /sandbox/.venv/bin/activate`
 - confirm `data/clean/clean.parquet` exists and is non-empty
 - confirm `runs/queue/` has at least one config
 - confirm `runs/results.tsv` exists with the header row from `AGENTS.md` (create it if missing)
@@ -43,10 +44,12 @@ One config in, one row out. Every config gets exactly one run; every run gets ex
 
 ## Execution Contract
 
+Run `source /sandbox/.venv/bin/activate` once at the start of the session (re-run if the shell resets).
+
 For each config file in `runs/queue/`, in lexicographic order:
 
 - run `scripts/py scripts/train.py --config <path> --data data/clean/clean.parquet --models-dir models/ --device <gpu|cpu>`
-- always invoke `scripts/py` (not bare `python`) so the venv is picked up regardless of shell activation
+- always invoke `scripts/py` (not bare `python`); keep the sandbox venv active via `source /sandbox/.venv/bin/activate`
 - the script handles: load → fit → eval → save model → emit a one-line JSON summary on stdout
 - parse the summary; append one row to `runs/results.tsv` per the schema in `AGENTS.md`
 - on script failure: append a row with `status: failed` and the stderr tail in `secondary_metrics_json`; do not retry
@@ -55,7 +58,7 @@ For each config file in `runs/queue/`, in lexicographic order:
 After the queue is trained:
 
 - read `runs/results.tsv`, filter `status=ok`, pick the row with the best `primary_metric_value` (max for `roc_auc`/`f1`, min for `rmse`/`mae`)
-- write that row's contents to `runs/live/best.json`
+- write that row's contents to `runs/live/best.json`ß
 - if no `ok` rows, do not write `best.json` — surface the all-failed condition
 
 ## Required Final Report
