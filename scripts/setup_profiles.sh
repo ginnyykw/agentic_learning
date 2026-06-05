@@ -58,7 +58,7 @@ for role in "${ROLES[@]}"; do
   # `hermes profile create` leaves these blank, so the new profile has no model.
   # We copy from $HERMES_HOME (the default profile's home) without touching it.
   for cfg in config.yaml .env; do
-    src="$HERMES_HOME/$cfg"
+    src="$HERMES_HOME/.hermes/$cfg"
     dst="$profile_dir/$cfg"
     if [[ -f "$src" && ! -f "$dst" ]]; then
       openshell sandbox exec -n $sb_name bash -c "cp "$src" "$dst""
