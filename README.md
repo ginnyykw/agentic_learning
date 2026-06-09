@@ -6,19 +6,21 @@ A multi-agent ML pipeline that turns a client's spreadsheet into a trained model
 
 ## What It Does
 
-| Stage | Agent | What It Produces |
-|---|---|---|
-| 1. Preprocess | `preprocessor` | Cleaned Parquet + data profile JSON |
-| 2. Architect | `architect` | 2-3 model configurations in the queue |
-| 3. Train | `trainer` | Trained models + append-only results ledger |
-| 4. Report | `reporter` | Client-facing markdown report |
+
+| Stage         | Agent          | What It Produces                            |
+| ------------- | -------------- | ------------------------------------------- |
+| 1. Preprocess | `preprocessor` | Cleaned Parquet + data profile JSON         |
+| 2. Architect  | `architect`    | 2-3 model configurations in the queue       |
+| 3. Train      | `trainer`      | Trained models + append-only results ledger |
+| 4. Report     | `reporter`     | Client-facing markdown report               |
+
 
 ## Architecture
 
 Two NemoClaw sandboxes with different security levels:
 
-- **`data-pipeline`** — NVIDIA inference API + local gateway only
-- **`reporter`** — Zero network (completely blocked)
+- `**data-pipeline`** — NVIDIA inference API + local gateway only
+- `**reporter**` — Zero network (completely blocked)
 
 Both use Landlock filesystem locks, seccomp syscall filtering, and run as an unprivileged `sandbox` user.
 
@@ -36,6 +38,7 @@ Run from the repository root.
 ### 1. Create the sandboxes
 
 Each uses an interactive wizard. When prompted, select:
+
 - Inference provider: `Local Ollama`
 - Model: `qwen3.6:35b` (or your preferred model)
 
@@ -48,10 +51,10 @@ nemoclaw onboard --agent hermes --name reporter
 
 ```bash
 # data-pipeline: allow only NVIDIA inference + local gateway
-openshell policy set --policy policy/demo-pipeline-restricted.yaml data-pipeline --wait
+openshell policy set --policy policy_new/demo-pipeline-restricted.yaml data-pipeline --wait
 
-# reporter: zero network (completely blocked)
-openshell policy set --policy policy/reporter-restricted.yaml reporter --wait
+# reporter: allow to install Python dependencies
+openshell policy set --policy policy_new/reporter-setup.yaml reporter --wait
 ```
 
 ### 3. Upload files to `data-pipeline` sandbox
@@ -90,7 +93,14 @@ openshell sandbox exec -n reporter \
   bash -c 'python3 -m venv /sandbox/.venv && /sandbox/.venv/bin/pip install -r /sandbox/requirements.txt'
 ```
 
-### 6. Create local Python venv
+### 6. Apply `reporter` network policies
+
+```bash
+# reporter: zero network (completely blocked)
+openshell policy set --policy policy_new/reporter-restricted.yaml reporter --wait
+```
+
+### 7. Create local Python venv
 
 For running the pipeline locally (outside sandboxes):
 
@@ -100,7 +110,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 7. Set up Hermes profiles
+### 8. Set up Hermes profiles
 
 Creates profiles for each agent role (preprocessor, architect, trainer, reporter), inheriting your default model configuration:
 
@@ -128,14 +138,13 @@ Files uploaded:
                  skills/trainer/SKILL.md, AGENTS.md
   reporter:      render_report.py, skills/reporter/SKILL.md, AGENTS.md
 
-
-### Full run for data-pipeline sandbox (preprocessor -> architect -> trainer)
+### 1. Full run for `data-pipeline` sandbox (preprocessor -> architect -> trainer)
 
 ```bash
 bash scripts/run_pipeline.sh data/raw/telco-churn.csv Churn
 ```
 
-### Step by step (recommended for demos)
+### OR: Step by step (recommended for demos)
 
 ```bash
 # 1. Preprocess — clean data and generate profile
@@ -157,12 +166,12 @@ openshell sandbox download data-pipeline /sandbox/models/ models
 openshell sandbox download data-pipeline /sandbox/data/clean/profile.json data/clean/profile.json
 ```
 
-### Upload results to reporter and generate the report:
+### 2. Upload results to `reporter` and generate the report:
 
 ```bash
-openshell sandbox upload reporter runs1/ /sandbox
-openshell sandbox upload reporter data1/ /sandbox
-openshell sandbox upload reporter models1/ /sandbox
+openshell sandbox upload reporter runs/ /sandbox --no-git-ignore
+openshell sandbox upload reporter data/ /sandbox --no-git-ignore
+openshell sandbox upload reporter models/ /sandbox --no-git-ignore
 
 # Report — generate client-facing report
 openshell sandbox exec -n reporter bash -c "hermes -p reporter chat -t terminal,file \
@@ -172,7 +181,7 @@ openshell sandbox exec -n reporter bash -c "hermes -p reporter chat -t terminal,
 openshell sandbox download reporter /sandbox/reports/final.md reports/final.md
 ```
 
-### Security demo
+### 3. Security demo
 
 ```bash
 bash scripts/demo-security.sh
@@ -205,13 +214,16 @@ Then re-run the pipeline stages. `data/raw/` is untouched.
 
 ## Troubleshooting
 
-| Issue | Fix |
-|---|---|
-| Hermes profiles missing | Run `bash scripts/setup_profiles.sh` — it's idempotent |
-| Agent can't find pandas/xgboost | Activate the venv: `source .venv/bin/activate` |
-| Preprocessor says "target column ambiguous" | Pass `target=<col>` in the prompt explicitly |
-| Architect says "queue not empty" | `rm runs/queue/*.json` and retry |
-| All training runs failed | Check `runs/results.tsv` secondary_metrics_json for stderr |
-| Reporter says best.json missing | Trainer didn't produce a winner; check step 3 |
-| Sandbox policy not applied | `openshell policy get <name> --full` |
-| `l7_decision=deny` in logs | Re-run `openshell policy set` |
+
+| Issue                                       | Fix                                                        |
+| ------------------------------------------- | ---------------------------------------------------------- |
+| Hermes profiles missing                     | Run `bash scripts/setup_profiles.sh` — it's idempotent     |
+| Agent can't find pandas/xgboost             | Activate the venv: `source .venv/bin/activate`             |
+| Preprocessor says "target column ambiguous" | Pass `target=<col>` in the prompt explicitly               |
+| Architect says "queue not empty"            | `rm runs/queue/*.json` and retry                           |
+| All training runs failed                    | Check `runs/results.tsv` secondary_metrics_json for stderr |
+| Reporter says best.json missing             | Trainer didn't produce a winner; check step 3              |
+| Sandbox policy not applied                  | `openshell policy get <name> --full`                       |
+| `l7_decision=deny` in logs                  | Re-run `openshell policy set`                              |
+
+

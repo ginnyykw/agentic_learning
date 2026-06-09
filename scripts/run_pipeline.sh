@@ -84,9 +84,9 @@ for download in "${DOWNLOAD_RPT[@]}"; do
     openshell sandbox download data-pipeline $local_src $remote_dst
 done
 
-cp -r "$REPO_ROOT/runs" "$REPO_ROOT/runs1"
-cp -r "$REPO_ROOT/models" "$REPO_ROOT/models1"
-cp -r "$REPO_ROOT/data/clean/" "$REPO_ROOT/data1"
+# cp -r "$REPO_ROOT/runs" "$REPO_ROOT/runs1"
+# cp -r "$REPO_ROOT/models" "$REPO_ROOT/models1"
+# cp -r "$REPO_ROOT/data/clean/" "$REPO_ROOT/data1"
 
 
 echo

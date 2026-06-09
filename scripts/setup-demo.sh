@@ -354,9 +354,9 @@ cat <<'EOF'
 
     2. Upload results to reporter:
 
-       openshell sandbox upload reporter runs1/ /sandbox
-       openshell sandbox upload reporter data1/ /sandbox
-       openshell sandbox upload reporter models1/ /sandbox
+       openshell sandbox upload reporter runs/ /sandbox --no-git-ignore
+       openshell sandbox upload reporter data/ /sandbox --no-git-ignore
+       openshell sandbox upload reporter models/ /sandbox --no-git-ignore
 
     3. Run reporter:
        openshell sandbox exec -n reporter bash -c "hermes -p reporter chat -t terminal,file \
